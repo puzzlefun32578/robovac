@@ -17,7 +17,6 @@ bool mitersaw = OFF;
 bool housevac = OFF;
 bool vacuum = OFF;
 int stepstomove = 12000;
-
 void setup()
 {
   pinMode(directionPin, OUTPUT);
@@ -31,7 +30,7 @@ void setup()
   pinMode(housevacLEDPIN, OUTPUT);
   pinMode(VACUUMPIN, OUTPUT);
    
-  Serial.begin(9600);
+  Serial.begin(38400);
  
  }
 void moveleft()
@@ -61,13 +60,23 @@ void moveright()
            }
   digitalWrite(enablePin, HIGH);          
 }
-
+int getcurrent(int pin)
+   {
+   int min = 1000;
+   int max = 0;
+   for( int i; i<200; i++)
+   {
+   int currentvalue = analogRead(pin);
+   if(currentvalue < min) { min = currentvalue; }
+   if(currentvalue > max) {max = currentvalue; }
+   }
+   
+    return max - min;
 void loop() 
 { 
-
+  //while(true) {Serial.println(analogRead(mitersawPIN));}
   
-  for(int i=0; i<10; i++)       //look to see if the tablesaw is drawing current
-  {   if(abs(analogRead(tablesawPIN)-512)>20) {  tablesaw = ON;  }   }
+  if (getcurrent(tablesawPIN) > 100) {  tablesaw = ON;  }
 
   if(tablesaw == ON)    //if tablesaw is on, move hose to correct port and turn on vacuum
   {
@@ -76,8 +85,8 @@ void loop()
       digitalWrite(tablesawLEDPIN, HIGH);
       while(tablesaw == ON) 
       {
-        //delay(200);    //delay added to slow things down
-        for(int i=0; i<10; i++)  {  if(abs(analogRead(tablesawPIN)-512)<5) {  tablesaw = OFF;  }  }
+      while (true) {serial.println(getcurrrent)} 
+       if(getcurrent(tablesawPIN) < 100) {  tablesaw = OFF;  }
       }
       digitalWrite(tablesawLEDPIN, LOW);
       delay(3000);

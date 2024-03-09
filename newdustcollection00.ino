@@ -72,6 +72,7 @@ int getcurrent(int pin)
    }
    
     return max - min;
+   }
 void loop() 
 { 
   //while(true) {Serial.println(analogRead(mitersawPIN));}
@@ -85,7 +86,7 @@ void loop()
       digitalWrite(tablesawLEDPIN, HIGH);
       while(tablesaw == ON) 
       {
-      while (true) {serial.println(getcurrrent)} 
+      //while (true) {Serial.println(getcurrent(tablesawPIN));} 
        if(getcurrent(tablesawPIN) < 100) {  tablesaw = OFF;  }
       }
       digitalWrite(tablesawLEDPIN, LOW);

@@ -16,7 +16,8 @@ bool tablesaw = OFF;
 bool mitersaw = OFF;
 bool housevac = OFF;
 bool vacuum = OFF;
-int stepstomove = 12000;
+int stepstomove = 12375;
+int stepperdelay = 40;
 
 void setup()
 {
@@ -41,9 +42,9 @@ void moveleft()
   for (int i=0; i<stepstomove; i++)          // move carriage 
            {  
            digitalWrite(stepPin, HIGH);
-           delayMicroseconds(50);  //(abs((i-6000)/60)+25);
+           delayMicroseconds(stepperdelay);  
            digitalWrite(stepPin, LOW);
-           delayMicroseconds(50);  //(abs((i-6000)/60)+25); 
+           delayMicroseconds(stepperdelay); 
            }
   digitalWrite(enablePin, HIGH);
   delay(200);         
@@ -56,9 +57,9 @@ void moveright()
   for (int i=0; i<stepstomove; i++)          // move carriage 
            {  
            digitalWrite(stepPin, HIGH);
-           delayMicroseconds(50);
+           delayMicroseconds(stepperdelay);
            digitalWrite(stepPin, LOW);
-           delayMicroseconds(50); 
+           delayMicroseconds(stepperdelay); 
            }
   digitalWrite(enablePin, HIGH);
   delay(200);          
@@ -112,20 +113,19 @@ void loop()
    
   if (!digitalRead(housevacPIN)) 
      {
-     delay(500);
-     housevac = OFF;
-     if  (!digitalRead(housevacPIN)) 
+     delay(1000);
+     if  (!digitalRead(housevacPIN))   //if A is only pressed once, then the pin will still be high so they want housevac
          {
          digitalWrite(VACUUMPIN, HIGH);
          while (!digitalRead(housevacPIN))   {  delay(200); }  
          digitalWrite(VACUUMPIN, LOW);
          }
-     else 
+     else      //if pin went low in the 600msec delay, then user pressed "B" and wants the lathe vacuum on
          {
           moveright();
           moveright();
           digitalWrite(VACUUMPIN, HIGH);
-          delay(1000);
+          delay(5000);    //give the user time to hit the A button again to put pin in the high state
           while (!digitalRead(housevacPIN))   {  delay(200); }            
           digitalWrite(VACUUMPIN, LOW);
           moveleft(); 
